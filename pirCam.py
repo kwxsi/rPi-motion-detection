@@ -12,27 +12,27 @@ import threading
 
 # Setting up Pi with Firebase
 config = {
-    "apiKey": "AIzaSyB4QwzmQkpXBt4uTbYDP7QWjPY_h1Y6nyw",
-    "authDomain": "sikuriti-974d7.firebaseapp.com",
-    "databaseURL": "https://sikuriti-974d7.firebaseio.com",
-    "storageBucket": "sikuriti-974d7.appspot.com"
+    "apiKey": "FIREBASE_API_KEY",
+    "authDomain": "APP_ID.firebaseapp.com",
+    "databaseURL": "https://APP_ID.firebaseio.com",
+    "storageBucket": "APP_ID.appspot.com"
     }
 firebase = pyrebase.initialize_app(config)
 
 # Initializing Firebase
 auth = firebase.auth()
-user = auth.sign_in_with_email_and_password("group18@gmail.com","test123")
+user = auth.sign_in_with_email_and_password("E_MAIL","PASS")
 storage = firebase.storage()
 db = firebase.database()
 print ("Connected to Firebase")
 
 
 # Twilio SMS config
-accountSID = "ACf7cf2f816df5a28c26e34e127a7f7756"
-authToken = "4aa365ce13105d080133abcf18711598"
+accountSID = "ACCOUNT_SID"
+authToken = "AUTH_TOKEN"
 client = Client(accountSID, authToken)
-myTwilioNumber = "+18608665742"
-myCellPhone = "+233500009134"
+myTwilioNumber = "YOUR_TWILIO_NUMBER"
+myCellPhone = "CELL_PHONE_NUMBER"
 
 # PIR sensor config with Raspberry Pi
 sensor = 4
@@ -79,14 +79,14 @@ def processImage(filename):
         lock.acquire()
         try:
             # Uploading image to Firebase
-            message = client.messages.create(to="+233500009134", from_="+18608665742", body="Intruder Alert! Kindly Check Sikuriti App (Surveillance) to confirm.")
+            message = client.messages.create(to="CELL_PHONE_NUMBER", from_="TWILIO_NUMBER", body="Intruder Alert!")
             print ("SMS successfully sent to User")
-            storage.child("users").child("Yack5FGoYyTJSMcO5C3H0cLPi4F2").child("%s" % filename).put(filename, user['idToken'])
-            url = storage.child("users").child("Yack5FGoYyTJSMcO5C3H0cLPi4F2").child("%s" % filename).get_url(None)
+            storage.child("users").child("USER_CHILD_ID").child("%s" % filename).put(filename, user['idToken'])
+            url = storage.child("users").child("USER_CHILD_ID").child("%s" % filename).get_url(None)
             data = {
                 "image_link":url
                 }
-            db.child("users").child("Yack5FGoYyTJSMcO5C3H0cLPi4F2").update(data, user['idToken'])
+            db.child("users").child("USER_CHILD_ID").update(data, user['idToken'])
             
             print ("Photo Uploaded!")
         except:
